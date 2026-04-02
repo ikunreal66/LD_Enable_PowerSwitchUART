@@ -1,6 +1,15 @@
-# LD_Enable_PowerSwitchUART 项目记录
+# STM32 Laser Controller (UART + DMA)
 
-## 调试日志
+## Current Status
 * **2026-04-02**: 
-    - 当前状态：串口控制 DAC 功能已稳定。
-    - 待解决问题：内置 PD（光电探测器）电路目前测不到输出电流，需排查硬件引脚连接。
+    - **New Feature**: Added "ON/OFF" command support via Serial to control Laser Enable (PB6).
+    - **Stability Fix**: Fixed the system hang issue. Added ORE/FE error clearing in USART1_IRQHandler and increased OLED refresh interval.
+    - **Code Cleanup**: Switched all comments to English for better readability.
+
+## Serial Commands
+* `ON`: Enable Laser Power.
+* `OFF`: Emergency Shutdown.
+* `0-4095`: Set DAC Output Voltage.
+
+## Problems Existing
+* **PD Inside the LD**: Currently not measuring output current. Need to check the hardware connection.
