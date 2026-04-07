@@ -1,12 +1,18 @@
-Objects/
-Listings/
-*.o
-*.d
-*.crf
+# Keil generated files
+*.uvguix.*
+*.uvoptx
+*.bak
 *.dep
-*.axf
-*.lnp
 *.lst
+*.obj
 *.map
-*.htm
-*.build_log.htm
+*.__i
+*.crf
+*.d
+*.o
+/Listing/
+/Output/
+
+# VS Code files
+.vscode/
+*.log

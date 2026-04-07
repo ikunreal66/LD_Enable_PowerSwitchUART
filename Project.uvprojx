@@ -709,6 +709,16 @@
               <FileType>5</FileType>
               <FilePath>.\NewPart\Laser_Iset.h</FilePath>
             </File>
+            <File>
+              <FileName>App_Command.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\NewPart\App_Command.c</FilePath>
+            </File>
+            <File>
+              <FileName>App_Command.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\NewPart\App_Command.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

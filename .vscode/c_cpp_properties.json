@@ -3,12 +3,12 @@
         {
             "name": "Target 1",
             "includePath": [
-                "d:\\1_Projects_Research\\Keil\\LD_Enable_PowerSwitch\\Start",
-                "d:\\1_Projects_Research\\Keil\\LD_Enable_PowerSwitch\\User",
-                "d:\\1_Projects_Research\\Keil\\LD_Enable_PowerSwitch\\Library",
-                "d:\\1_Projects_Research\\Keil\\LD_Enable_PowerSwitch\\System",
-                "d:\\1_Projects_Research\\Keil\\LD_Enable_PowerSwitch\\Hardware",
-                "d:\\1_Projects_Research\\Keil\\LD_Enable_PowerSwitch\\NewPart",
+                "d:\\1_Projects_Research\\Keil\\1_LD_Enable_PowerSwitchUART_Backup\\Start",
+                "d:\\1_Projects_Research\\Keil\\1_LD_Enable_PowerSwitchUART_Backup\\User",
+                "d:\\1_Projects_Research\\Keil\\1_LD_Enable_PowerSwitchUART_Backup\\Library",
+                "d:\\1_Projects_Research\\Keil\\1_LD_Enable_PowerSwitchUART_Backup\\System",
+                "d:\\1_Projects_Research\\Keil\\1_LD_Enable_PowerSwitchUART_Backup\\Hardware",
+                "d:\\1_Projects_Research\\Keil\\1_LD_Enable_PowerSwitchUART_Backup\\NewPart",
                 "D:\\3_Software_Research\\Keil\\Keil_Core\\ARM\\ARMCC\\include",
                 "D:\\3_Software_Research\\Keil\\Keil_Core\\ARM\\ARMCC\\include\\arm_linux",
                 "D:\\3_Software_Research\\Keil\\Keil_Core\\ARM\\ARMCC\\include\\arm_linux_compat",
