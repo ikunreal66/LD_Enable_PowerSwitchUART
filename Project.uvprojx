@@ -719,6 +719,16 @@
               <FileType>5</FileType>
               <FilePath>.\NewPart\App_Command.h</FilePath>
             </File>
+            <File>
+              <FileName>PGA204.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\NewPart\PGA204.c</FilePath>
+            </File>
+            <File>
+              <FileName>PGA204.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\NewPart\PGA204.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

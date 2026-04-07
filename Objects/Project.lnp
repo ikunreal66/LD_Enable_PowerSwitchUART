@@ -30,6 +30,7 @@
 ".\objects\serial.o"
 ".\objects\laser_iset.o"
 ".\objects\app_command.o"
+".\objects\pga204.o"
 ".\objects\main.o"
 ".\objects\stm32f10x_it.o"
 --strict --scatter ".\Objects\Project.sct"
