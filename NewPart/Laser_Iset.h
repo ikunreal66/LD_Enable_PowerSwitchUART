@@ -15,8 +15,9 @@
 
 
 void Dac_Dma2_Tim2_Init(void);
-static void ConvertToVolStr(uint16_t dacVal, char *buf);
-void GetActualVoltageStr(char *hStr, char *lStr);
+void ConvertToVolStr(uint16_t dacVal, char *buf);
+//void GetActualVoltageStr(char *hStr, char *lStr);
+void GetVoltageStr(char *hStr);
 void Set_Dac_Amplitude(uint16_t v_high);
 void Laser_EN_Init(void);
 void Laser_Enable(void);

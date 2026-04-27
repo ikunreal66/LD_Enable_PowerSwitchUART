@@ -190,7 +190,7 @@
             <hadIRAM2>0</hadIRAM2>
             <hadIROM2>0</hadIROM2>
             <StupSel>8</StupSel>
-            <useUlib>0</useUlib>
+            <useUlib>1</useUlib>
             <EndSel>0</EndSel>
             <uLtcg>0</uLtcg>
             <nSecure>0</nSecure>
@@ -720,14 +720,24 @@
               <FilePath>.\NewPart\App_Command.h</FilePath>
             </File>
             <File>
-              <FileName>PGA204.c</FileName>
+              <FileName>lmp8358.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\NewPart\PGA204.c</FilePath>
+              <FilePath>.\NewPart\lmp8358.c</FilePath>
             </File>
             <File>
-              <FileName>PGA204.h</FileName>
+              <FileName>lmp8358.h</FileName>
               <FileType>5</FileType>
-              <FilePath>.\NewPart\PGA204.h</FilePath>
+              <FilePath>.\NewPart\lmp8358.h</FilePath>
+            </File>
+            <File>
+              <FileName>ADS1252.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\NewPart\ADS1252.c</FilePath>
+            </File>
+            <File>
+              <FileName>ADS1252.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\NewPart\ADS1252.h</FilePath>
             </File>
           </Files>
         </Group>

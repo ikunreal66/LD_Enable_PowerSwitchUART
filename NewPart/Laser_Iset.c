@@ -15,7 +15,7 @@
 	
 
 //50% duty cycle square wave
-uint16_t square_wave[2] = {194, 0};
+uint16_t square_wave[2] = {1000, 0};
 
 void Dac_Dma2_Tim2_Init()
 {
@@ -80,7 +80,8 @@ void Dac_Dma2_Tim2_Init()
 /**
   * @brief  Convert DAC value to Voltage String (Format: X.XXV)
   */
-static void ConvertToVolStr(uint16_t dacVal, char *buf)
+
+void ConvertToVolStr(uint16_t dacVal, char *buf)
 {
     uint16_t vol = (uint16_t)((uint32_t)dacVal * 3300 / 4095);
     buf[0] = (vol / 1000) + '0';
@@ -91,33 +92,7 @@ static void ConvertToVolStr(uint16_t dacVal, char *buf)
     buf[5] = '\0';
 }
 
-/**
-  * @brief  Capture actual voltage using 20ms delay (for 25Hz wave)
-  * @param  hStr: Buffer for High level string
-  * @param  lStr: Buffer for Low level string
-  */
-void GetActualVoltageStr(char *hStr, char *lStr)
-{
-    uint16_t val1, val2;
-    uint16_t maxV, minV;
 
-    /* Capture 1st point */
-    val1 = DAC_GetDataOutputValue(DAC_Channel_1);
-    
-    /* Delay 20ms (Half cycle of 25Hz) */
-    Delay_ms(20); 
-    
-    /* Capture 2nd point */
-    val2 = DAC_GetDataOutputValue(DAC_Channel_1);
-
-    /* Identify Max and Min */
-    maxV = (val1 > val2) ? val1 : val2;
-    minV = (val1 > val2) ? val2 : val1;
-
-    /* Format strings */
-    ConvertToVolStr(maxV, hStr);
-    ConvertToVolStr(minV, lStr);
-}
 /**
  * @brief 随时更改电压幅值（可以在 while 循环里调用）
  * @param v_high: 高电平对应的 DAC 值 (0-4095)
@@ -168,3 +143,50 @@ void Laser_Enable(void) {
 void Laser_Disable(void) {
     GPIO_ResetBits(GPIOB, GPIO_Pin_6);
 }
+
+
+
+/**
+  * @brief  Capture actual voltage using 20ms delay (for 25Hz wave)
+  * @param  hStr: Buffer for High level string
+  * @param  lStr: Buffer for Low level string
+  */
+void GetActualVoltageStr(char *hStr, char *lStr)
+{
+    uint16_t val1, val2;
+    uint16_t maxV, minV;
+
+    /* Capture 1st point */
+    val1 = DAC_GetDataOutputValue(DAC_Channel_1);
+    
+    /* Delay 20ms (Half cycle of 25Hz) */
+    Delay_ms(20); 
+    
+    /* Capture 2nd point */
+    val2 = DAC_GetDataOutputValue(DAC_Channel_1);
+
+    /* Identify Max and Min */
+    maxV = (val1 > val2) ? val1 : val2;
+    minV = (val1 > val2) ? val2 : val1;
+
+    /* Format strings */
+    ConvertToVolStr(maxV, hStr);
+    ConvertToVolStr(minV, lStr);
+}
+
+/**
+  * @brief  Capture actual voltage using 20ms delay (for 25Hz wave)
+  * @param  hStr: Buffer for High level string
+  * @param  lStr: Buffer for Low level string
+  */
+void GetVoltageStr(char *hStr)
+{
+    uint16_t val1;
+    /* Capture 1st point */
+	
+    val1 = DAC_GetDataOutputValue(DAC_Channel_1);
+    Delay_ms(20);
+    /* Format strings */
+    ConvertToVolStr(val1, hStr);
+}
+

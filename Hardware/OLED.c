@@ -6,6 +6,12 @@
 #define OLED_W_SDA(x)		GPIO_WriteBit(GPIOA, GPIO_Pin_11, (BitAction)(x))
 
 /*引脚初始化*/
+void OLED_I2C_Delay(void)
+{
+    uint32_t i = 10; // 调整这个值，确保时钟频率在 100KHz-400KHz 左右
+    while(i--);
+}
+
 void OLED_I2C_Init(void)
 {
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
@@ -52,17 +58,35 @@ void OLED_I2C_Stop(void)
   * @param  Byte 要发送的一个字节
   * @retval 无
   */
+//void OLED_I2C_SendByte(uint8_t Byte)
+//{
+//	uint8_t i;
+//	for (i = 0; i < 8; i++)
+//	{
+//		OLED_W_SDA(Byte & (0x80 >> i));
+//		OLED_W_SCL(1);
+//		OLED_W_SCL(0);
+//	}
+//	OLED_W_SCL(1);	//额外的一个时钟，不处理应答信号
+//	OLED_W_SCL(0);
+//}
+
 void OLED_I2C_SendByte(uint8_t Byte)
 {
-	uint8_t i;
-	for (i = 0; i < 8; i++)
-	{
-		OLED_W_SDA(Byte & (0x80 >> i));
-		OLED_W_SCL(1);
-		OLED_W_SCL(0);
-	}
-	OLED_W_SCL(1);	//额外的一个时钟，不处理应答信号
-	OLED_W_SCL(0);
+    uint8_t i;
+    for (i = 0; i < 8; i++)
+    {
+        OLED_W_SDA(Byte & (0x80 >> i));
+        OLED_I2C_Delay();
+        OLED_W_SCL(1);
+        OLED_I2C_Delay();
+        OLED_W_SCL(0);
+        OLED_I2C_Delay();
+    }
+    OLED_W_SCL(1);    // 额外时钟处理 ACK
+    OLED_I2C_Delay();
+    OLED_W_SCL(0);
+    OLED_I2C_Delay();
 }
 
 /**

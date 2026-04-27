@@ -1,5 +1,5 @@
 #include "Serial.h"
-#include <string.h>
+
 
 uint8_t Serial_RxPacket[RX_BUF_SIZE];
 uint8_t Serial_RxFlag = 0;
@@ -40,7 +40,7 @@ void Serial_Init(void)
 
     /* 4. USART Config */
     USART_InitTypeDef USART_InitStructure;
-    USART_InitStructure.USART_BaudRate = 9600;
+    USART_InitStructure.USART_BaudRate = 115200;
     USART_InitStructure.USART_WordLength = USART_WordLength_8b;
     USART_InitStructure.USART_StopBits = USART_StopBits_1;
     USART_InitStructure.USART_Parity = USART_Parity_No;
@@ -67,6 +67,7 @@ void USART1_IRQHandler(void)
 {
     uint16_t stat = USART1->SR;
     uint16_t dummy = USART1->DR;
+	(void)dummy;
 
     /* 1. Error Handling: Clear ORE/NE/FE/PE flags */
     if (stat & (USART_SR_ORE | USART_SR_NE | USART_SR_FE | USART_SR_PE))
@@ -76,6 +77,7 @@ void USART1_IRQHandler(void)
         DMA_Cmd(DMA1_Channel5, DISABLE);
         DMA_SetCurrDataCounter(DMA1_Channel5, RX_BUF_SIZE);
         DMA_Cmd(DMA1_Channel5, ENABLE);
+		DMA1->IFCR = DMA1_IT_GL5;
         return; 
     }
 
@@ -108,4 +110,12 @@ void Serial_SendString(char *str)
     }
 }
 
+// 这就是重定向代码
+int fputc(int ch, FILE *f)
+{
+
+    USART_SendData(USART1, (uint8_t) ch);
+    while (USART_GetFlagStatus(USART1, USART_FLAG_TXE) == RESET);
+    return ch;
+}
 

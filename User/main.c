@@ -3,65 +3,89 @@
 #include "Laser_Iset.h"
 #include "Serial.h"
 #include "Delay.h"
-#include "PGA204.h"
 #include "App_Command.h" 
+#include "lmp8358.h"
 #include <string.h>
 #include <stdio.h>
 
+
 int main(void)
 {
-    char HighStr[12];
-    char LowStr[12];
     char DisplayBuf[16]; // 用于格式化 OLED 字符串
+    //float AdcVoltage = 0.0f;
+	
+	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2); // 必须设置优先级分组
     
-    /* 硬件初始化 */
-    OLED_Init();
-    Dac_Dma2_Tim2_Init(); 
-    Serial_Init();        
-    Laser_EN_Init();      
-    PGA204_Init();
-
-    /* 初始界面绘制 */
-    OLED_Clear();
-    OLED_ShowString(1, 1, "0.00V");  // 第一行：电压
-    OLED_ShowString(2, 1, "Set:0       "); // 第二行：DAC 设定值
-    OLED_ShowString(3, 1, "G:1         "); // 第三行：增益
+	OLED_Init();
+    OLED_ShowString(1, 1, "0.80V");       // 第一行：原有的 DAC 电压显示
+    OLED_ShowString(2, 1, "Set:1000   "); // 第二行：DAC 设定值
+    OLED_ShowString(3, 1, "G:10         "); // 第三行：增益
     OLED_ShowString(4, 1, "Laser: OFF  "); // 第四行：开关状态
-
+	
+	Serial_Init();   
+    Dac_Dma2_Tim2_Init();        
+    Laser_EN_Init();
+	LMP8358_Init();
+	LMP8358_SetGain(LMP_GAIN_10);
+	ADS1252_Init();
+	
+	
+	printf("All Init\r\n");
+	
     while (1)
-    {    
-        // 1. 串口指令解析 (修改变量并设置 Flag)
+    {   
+        // 1. 串口指令解析 (保持不变)
         if (Serial_RxFlag == 1)
         {
             App_Command_Parse((char*)Serial_RxPacket); 
             memset(Serial_RxPacket, 0, RX_BUF_SIZE);
             Serial_RxFlag = 0;
+			Delay_ms(10);
         }
+		// 检查 ADS1252 是否采集完成
+		if (SamplingDone == 1) {
+			printf("--- Batch Sampling Results (%d points) ---\r\n", TargetSamples);
+		
+			for (int i = 0; i < TargetSamples; i++) {
+				// 1. 获取原始数据并进行符号扩展（如果数组里存的是 int32_t，这里直接取即可）
+				int32_t raw = ads_buffer[i];
+		
+				// 2. 换算为电压
+				float voltage = (float)raw * (2.5f / 8388608.0f);
+		
+				// 3. 串口打印：打印索引号、十六进制原码和换算后的电压
+				// 使用 %06X 打印 24 位十六进制，加上 0xFFFFFF 屏蔽位是为了只看低 24 位
+				printf("[%03d] Raw: 0x%06X | Volt: %.6f V\r\n", i, (unsigned int)(raw & 0xFFFFFF), voltage);
+			}
+		
+			printf("--- End of Batch ---\r\n\r\n");
+		
+			// 重置标志位，准备下一次触发
+			SamplingDone = 0;
+			SampleCounter = 0;
+			g_UpdateUI_Flag = 1; 
+		}
 
-        // 2. 只有当收到指令改变了数据时，才刷新对应的 OLED 区域
+        // 2. 界面标志位更新 (保持不变)
         if (g_UpdateUI_Flag == 1)
         {
-            // 刷新 DAC 设定行
             sprintf(DisplayBuf, "Set:%-4d    ", g_CurrentDAC);
             OLED_ShowString(2, 1, DisplayBuf);
             
-            // 刷新增益行
             sprintf(DisplayBuf, "G:%-4d      ", g_CurrentGain);
             OLED_ShowString(3, 1, DisplayBuf);
 
-            // 更新激光状态行
             if(g_LaserState) OLED_ShowString(4, 1, "Laser: ON   ");
             else             OLED_ShowString(4, 1, "Laser: OFF  ");
-            
-            g_UpdateUI_Flag = 0; // 刷新完成，清空标志
+ 
+			ConvertToVolStr(g_CurrentDAC, DisplayBuf);
+			OLED_ShowString(1, 1, DisplayBuf);
+			
+			OLED_ShowNum(1, 9, SampleCounter, 3);
+            g_UpdateUI_Flag = 0; 
         }
 
-        // 3. 周期性显示遥测电压 (HighStr)
-        // 这个函数内部应该已经包含 sprintf 逻辑
-        GetActualVoltageStr(HighStr, LowStr); 
-        OLED_ShowString(1, 1, HighStr);
-        
-        // 维持 200ms 刷新率，既保证流畅，也给总线留出空隙
-        Delay_ms(200); 
+		Delay_ms(10); 
     }
 }
+
