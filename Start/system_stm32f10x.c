@@ -201,120 +201,120 @@ static void SetSysClock(void);
   * @{
   */
 
-///**
-//  * @brief  Setup the microcontroller system
-//  *         Initialize the Embedded Flash Interface, the PLL and update the 
-//  *         SystemCoreClock variable.
-//  * @note   This function should be used only after reset.
-//  * @param  None
-//  * @retval None
-//  */
-//void SystemInit (void)
-//{
-//  /* Reset the RCC clock configuration to the default reset state(for debug purpose) */
-//  /* Set HSION bit */
-//  RCC->CR |= (uint32_t)0x00000001;
-
-//  /* Reset SW, HPRE, PPRE1, PPRE2, ADCPRE and MCO bits */
-//#ifndef STM32F10X_CL
-//  RCC->CFGR &= (uint32_t)0xF8FF0000;
-//#else
-//  RCC->CFGR &= (uint32_t)0xF0FF0000;
-//#endif /* STM32F10X_CL */   
-//  
-//  /* Reset HSEON, CSSON and PLLON bits */
-//  RCC->CR &= (uint32_t)0xFEF6FFFF;
-
-//  /* Reset HSEBYP bit */
-//  RCC->CR &= (uint32_t)0xFFFBFFFF;
-
-//  /* Reset PLLSRC, PLLXTPRE, PLLMUL and USBPRE/OTGFSPRE bits */
-//  RCC->CFGR &= (uint32_t)0xFF80FFFF;
-
-//#ifdef STM32F10X_CL
-//  /* Reset PLL2ON and PLL3ON bits */
-//  RCC->CR &= (uint32_t)0xEBFFFFFF;
-
-//  /* Disable all interrupts and clear pending bits  */
-//  RCC->CIR = 0x00FF0000;
-
-//  /* Reset CFGR2 register */
-//  RCC->CFGR2 = 0x00000000;
-//#elif defined (STM32F10X_LD_VL) || defined (STM32F10X_MD_VL) || (defined STM32F10X_HD_VL)
-//  /* Disable all interrupts and clear pending bits  */
-//  RCC->CIR = 0x009F0000;
-
-//  /* Reset CFGR2 register */
-//  RCC->CFGR2 = 0x00000000;      
-//#else
-//  /* Disable all interrupts and clear pending bits  */
-//  RCC->CIR = 0x009F0000;
-//#endif /* STM32F10X_CL */
-//    
-//#if defined (STM32F10X_HD) || (defined STM32F10X_XL) || (defined STM32F10X_HD_VL)
-//  #ifdef DATA_IN_ExtSRAM
-//    SystemInit_ExtMemCtl(); 
-//  #endif /* DATA_IN_ExtSRAM */
-//#endif 
-
-//  /* Configure the System clock frequency, HCLK, PCLK2 and PCLK1 prescalers */
-//  /* Configure the Flash Latency cycles and enable prefetch buffer */
-//  SetSysClock();
-
-//#ifdef VECT_TAB_SRAM
-//  SCB->VTOR = SRAM_BASE | VECT_TAB_OFFSET; /* Vector Table Relocation in Internal SRAM. */
-//#else
-//  SCB->VTOR = FLASH_BASE | VECT_TAB_OFFSET; /* Vector Table Relocation in Internal FLASH. */
-//#endif 
-//}
-
-
+/**
+  * @brief  Setup the microcontroller system
+  *         Initialize the Embedded Flash Interface, the PLL and update the 
+  *         SystemCoreClock variable.
+  * @note   This function should be used only after reset.
+  * @param  None
+  * @retval None
+  */
 void SystemInit (void)
 {
-    /* Reset RCC clock configuration to default state */
-    RCC->CR |= (uint32_t)0x00000001; // Set bit 0 (HSION) of CR register to 1 to enable HSI
-    /* Wait until HSI is ready */
-    while((RCC->CR & RCC_CR_HSIRDY) == 0)
-    {
-        // Empty loop until HSIRDY flag is set by hardware
-    }
+  /* Reset the RCC clock configuration to the default reset state(for debug purpose) */
+  /* Set HSION bit */
+  RCC->CR |= (uint32_t)0x00000001;
 
-    /* Configure PLL clock source as HSI, with HSI divided by 2 first */
-    RCC->CFGR |= (uint32_t)RCC_CFGR_PLLSRC_HSI_Div2;
-    RCC->CFGR &= (uint32_t)(~RCC_CFGR_PLLMULL); // Clear PLL multiplication factor bits first
-    RCC->CFGR |= (uint32_t)RCC_CFGR_PLLMULL12;  // Set PLL multiplication factor to 12
-                                                // PLL output frequency calculation: (HSI / 2) * 12 = (8MHz / 2) * 12 = 48MHz
+  /* Reset SW, HPRE, PPRE1, PPRE2, ADCPRE and MCO bits */
+#ifndef STM32F10X_CL
+  RCC->CFGR &= (uint32_t)0xF8FF0000;
+#else
+  RCC->CFGR &= (uint32_t)0xF0FF0000;
+#endif /* STM32F10X_CL */   
+  
+  /* Reset HSEON, CSSON and PLLON bits */
+  RCC->CR &= (uint32_t)0xFEF6FFFF;
 
-    /* Key supplement: Configure bus prescalers (fix APB1 exceeding upper limit) */
-    RCC->CFGR &= (uint32_t)(~RCC_CFGR_HPRE);    // Clear AHB prescaler bits
-    RCC->CFGR |= (uint32_t)RCC_CFGR_HPRE_DIV1;  // AHB prescaler = DIV1 (no division, AHB clock = SYSCLK)
+  /* Reset HSEBYP bit */
+  RCC->CR &= (uint32_t)0xFFFBFFFF;
+
+  /* Reset PLLSRC, PLLXTPRE, PLLMUL and USBPRE/OTGFSPRE bits */
+  RCC->CFGR &= (uint32_t)0xFF80FFFF;
+
+#ifdef STM32F10X_CL
+  /* Reset PLL2ON and PLL3ON bits */
+  RCC->CR &= (uint32_t)0xEBFFFFFF;
+
+  /* Disable all interrupts and clear pending bits  */
+  RCC->CIR = 0x00FF0000;
+
+  /* Reset CFGR2 register */
+  RCC->CFGR2 = 0x00000000;
+#elif defined (STM32F10X_LD_VL) || defined (STM32F10X_MD_VL) || (defined STM32F10X_HD_VL)
+  /* Disable all interrupts and clear pending bits  */
+  RCC->CIR = 0x009F0000;
+
+  /* Reset CFGR2 register */
+  RCC->CFGR2 = 0x00000000;      
+#else
+  /* Disable all interrupts and clear pending bits  */
+  RCC->CIR = 0x009F0000;
+#endif /* STM32F10X_CL */
     
-    // Add: APB1 prescaler = DIV2 (48/2=24MHz, safe)
-    RCC->CFGR &= (uint32_t)(~RCC_CFGR_PPRE1);
-    RCC->CFGR |= (uint32_t)RCC_CFGR_PPRE1_DIV2;
-    
-    // Add: APB2 prescaler = DIV1 (no division)
-    RCC->CFGR &= (uint32_t)(~RCC_CFGR_PPRE2);
-    RCC->CFGR |= (uint32_t)RCC_CFGR_PPRE2_DIV1;
+#if defined (STM32F10X_HD) || (defined STM32F10X_XL) || (defined STM32F10X_HD_VL)
+  #ifdef DATA_IN_ExtSRAM
+    SystemInit_ExtMemCtl(); 
+  #endif /* DATA_IN_ExtSRAM */
+#endif 
 
-    /* Enable PLL */
-    RCC->CR |= RCC_CR_PLLON;
-    /* Wait for PLL to lock (ready) */
-    while((RCC->CR & RCC_CR_PLLRDY) == 0)
-    {
-    }
+  /* Configure the System clock frequency, HCLK, PCLK2 and PCLK1 prescalers */
+  /* Configure the Flash Latency cycles and enable prefetch buffer */
+  SetSysClock();
 
-    /* Switch system clock source to PLL output */
-    RCC->CFGR &= (uint32_t)((uint32_t)~(RCC_CFGR_SW)); // Clear SW bit field
-    RCC->CFGR |= (uint32_t)RCC_CFGR_SW_PLL;            // Select PLL as SYSCLK source
-    /* Wait for clock source switch completion */
-    while ((RCC->CFGR & (uint32_t)RCC_CFGR_SWS) != (uint32_t)0x08)
-    {
-        // Wait until SWS status bit indicates clock source has switched to PLL (0x08 = PLL)
-    }
-
-    // At this point, system clock (SYSCLK) is running at 48MHz (based on HSI)
+#ifdef VECT_TAB_SRAM
+  SCB->VTOR = SRAM_BASE | VECT_TAB_OFFSET; /* Vector Table Relocation in Internal SRAM. */
+#else
+  SCB->VTOR = FLASH_BASE | VECT_TAB_OFFSET; /* Vector Table Relocation in Internal FLASH. */
+#endif 
 }
+
+
+//void SystemInit (void)
+//{
+//    /* Reset RCC clock configuration to default state */
+//    RCC->CR |= (uint32_t)0x00000001; // Set bit 0 (HSION) of CR register to 1 to enable HSI
+//    /* Wait until HSI is ready */
+//    while((RCC->CR & RCC_CR_HSIRDY) == 0)
+//    {
+//        // Empty loop until HSIRDY flag is set by hardware
+//    }
+
+//    /* Configure PLL clock source as HSI, with HSI divided by 2 first */
+//    RCC->CFGR |= (uint32_t)RCC_CFGR_PLLSRC_HSI_Div2;
+//    RCC->CFGR &= (uint32_t)(~RCC_CFGR_PLLMULL); // Clear PLL multiplication factor bits first
+//    RCC->CFGR |= (uint32_t)RCC_CFGR_PLLMULL12;  // Set PLL multiplication factor to 12
+//                                                // PLL output frequency calculation: (HSI / 2) * 12 = (8MHz / 2) * 12 = 48MHz
+
+//    /* Key supplement: Configure bus prescalers (fix APB1 exceeding upper limit) */
+//    RCC->CFGR &= (uint32_t)(~RCC_CFGR_HPRE);    // Clear AHB prescaler bits
+//    RCC->CFGR |= (uint32_t)RCC_CFGR_HPRE_DIV1;  // AHB prescaler = DIV1 (no division, AHB clock = SYSCLK)
+//    
+//    // Add: APB1 prescaler = DIV2 (48/2=24MHz, safe)
+//    RCC->CFGR &= (uint32_t)(~RCC_CFGR_PPRE1);
+//    RCC->CFGR |= (uint32_t)RCC_CFGR_PPRE1_DIV2;
+//    
+//    // Add: APB2 prescaler = DIV1 (no division)
+//    RCC->CFGR &= (uint32_t)(~RCC_CFGR_PPRE2);
+//    RCC->CFGR |= (uint32_t)RCC_CFGR_PPRE2_DIV1;
+
+//    /* Enable PLL */
+//    RCC->CR |= RCC_CR_PLLON;
+//    /* Wait for PLL to lock (ready) */
+//    while((RCC->CR & RCC_CR_PLLRDY) == 0)
+//    {
+//    }
+
+//    /* Switch system clock source to PLL output */
+//    RCC->CFGR &= (uint32_t)((uint32_t)~(RCC_CFGR_SW)); // Clear SW bit field
+//    RCC->CFGR |= (uint32_t)RCC_CFGR_SW_PLL;            // Select PLL as SYSCLK source
+//    /* Wait for clock source switch completion */
+//    while ((RCC->CFGR & (uint32_t)RCC_CFGR_SWS) != (uint32_t)0x08)
+//    {
+//        // Wait until SWS status bit indicates clock source has switched to PLL (0x08 = PLL)
+//    }
+
+//    // At this point, system clock (SYSCLK) is running at 48MHz (based on HSI)
+//}
 
 /**
   * @brief  Update SystemCoreClock variable according to Clock Register Values.

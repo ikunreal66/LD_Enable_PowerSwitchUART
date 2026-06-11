@@ -7,13 +7,13 @@ void LMP8358_Init(void) {
     GPIO_InitTypeDef GPIO_InitStructure;
 
     // 开启 GPIOB 时钟
-    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);
 
     // 配置 PB0, PB1, PB12 为推挽输出
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_12;
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10 | GPIO_Pin_11 | GPIO_Pin_12;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
-    GPIO_Init(GPIOB, &GPIO_InitStructure);
+    GPIO_Init(GPIOC, &GPIO_InitStructure);
     
     // 默认设置为增益 10 (全低)
     LMP8358_SetGain(LMP_GAIN_10);
@@ -26,15 +26,15 @@ void LMP8358_Init(void) {
  */
 void LMP8358_SetGain(LMP8358_Gain_TypeDef gain) {
     // 1. 设置 G0 (最低位) -> PB12
-    if (gain & 0x01) GPIO_SetBits(GPIOB, GPIO_Pin_12);
-    else             GPIO_ResetBits(GPIOB, GPIO_Pin_12);
+    if (gain & 0x01) GPIO_SetBits(GPIOC, GPIO_Pin_10);
+    else             GPIO_ResetBits(GPIOC, GPIO_Pin_10);
 	
 	// 2. 设置 G1 (中间位) -> PB0
-    if (gain & 0x02) GPIO_SetBits(GPIOB, GPIO_Pin_0);
-    else             GPIO_ResetBits(GPIOB, GPIO_Pin_0);
+    if (gain & 0x02) GPIO_SetBits(GPIOC, GPIO_Pin_11);
+    else             GPIO_ResetBits(GPIOC, GPIO_Pin_11);
 
     // 3. 设置 G2 (最高位) -> PB1
-    if (gain & 0x04) GPIO_SetBits(GPIOB, GPIO_Pin_1);
-    else             GPIO_ResetBits(GPIOB, GPIO_Pin_1);
+    if (gain & 0x04) GPIO_SetBits(GPIOC, GPIO_Pin_12);
+    else             GPIO_ResetBits(GPIOC, GPIO_Pin_12);
 
 }

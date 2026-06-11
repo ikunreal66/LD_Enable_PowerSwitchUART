@@ -15,7 +15,7 @@
 	
 
 //50% duty cycle square wave
-uint16_t square_wave[2] = {1000, 0};
+uint16_t square_wave[2] = {2000, 2000};
 
 void Dac_Dma2_Tim2_Init()
 {
@@ -35,7 +35,7 @@ void Dac_Dma2_Tim2_Init()
 
         /*定时器2配置*/
     TIM_PrescalerConfig(TIM2,48000-1,TIM_PSCReloadMode_Update);
-    TIM_SetAutoreload(TIM2,2000-1);
+    TIM_SetAutoreload(TIM2,30-1);
     TIM_SelectOutputTrigger(TIM2,TIM_TRGOSource_Update);
   
         /*DAC_InitStruct 参数初始化*/
@@ -106,42 +106,42 @@ void Set_Dac_Amplitude(uint16_t v_high)
 
 
 /**
- * @brief  初始化激光器使能引脚 PB6
+ * @brief  初始化激光器使能引脚 PA2
  * @note   逻辑：在配置为输出前先强制拉低，防止 ATLS 内部上拉导致误触发
  */
 void Laser_EN_Init(void) {
     GPIO_InitTypeDef GPIO_InitStructure;
 
     /* 1. 开启 GPIOB 时钟 */
-    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
 
     /* 2. 关键：在配置模式前，先向位清除寄存器写入 1，强行将电平拉低 */
     /* 这样做是为了抵消 ATLS 内部上拉电阻在引脚切换到输出模式瞬间的影响 */
-    GPIO_ResetBits(GPIOB, GPIO_Pin_6);
+    GPIO_ResetBits(GPIOA, GPIO_Pin_2);
 
     /* 3. 配置引脚参数 */
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;    // 推挽输出
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;    // 使能端不涉及高速切换，2MHz 纹波更小
     
-    GPIO_Init(GPIOB, &GPIO_InitStructure);
+    GPIO_Init(GPIOA, &GPIO_InitStructure);
     
     /* 4. 再次确认初始状态为关闭（低电平） */
-    GPIO_ResetBits(GPIOB, GPIO_Pin_6);
+    GPIO_ResetBits(GPIOA, GPIO_Pin_2);
 }
 
 /**
  * @brief  开启激光器总电源（使能）
  */
 void Laser_Enable(void) {
-    GPIO_SetBits(GPIOB, GPIO_Pin_6);
+    GPIO_SetBits(GPIOA, GPIO_Pin_2);
 }
 
 /**
  * @brief  关闭激光器总电源（紧急关断）
  */
 void Laser_Disable(void) {
-    GPIO_ResetBits(GPIOB, GPIO_Pin_6);
+    GPIO_ResetBits(GPIOA, GPIO_Pin_2);
 }
 
 

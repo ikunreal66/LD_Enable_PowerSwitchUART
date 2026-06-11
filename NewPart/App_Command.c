@@ -83,12 +83,11 @@ static void Cmd_Set_Dac(char *param) {
 static void Cmd_Sample_Start(char *param) {
     
 	int val = atoi(param);
-    if (val > 0 && val <= 30) { // 假设最大缓存 100
+    if (val > 0 && val <= 100) { // 假设最大缓存 100
         TargetSamples = (uint8_t)val;
     } else {
         TargetSamples = 10; // 默认值
     }
-//	printf("Sampling %d points...\r\n", TargetSamples);
     SampleCounter = 0;
     SamplingDone = 0;	
     EXTI_ClearITPendingBit(EXTI_Line14);
